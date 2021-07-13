@@ -1,5 +1,5 @@
-function q = memd(x, varargin)
-%
+function q = memdalt(x, varargin)
+%	This is an alternate version of MEMD (multivariate empirical mode decomposition) that is explained below.
 %
 % function MEMD applies the "Multivariate Empirical Mode Decomposition" algorithm (Rehman and Mandic, Proc. Roy. Soc A, 2010)
 % to multivariate inputs. We have verified this code by simulations for signals containing 3-16 channels.
