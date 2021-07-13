@@ -1,6 +1,6 @@
 function [mat_cor] = docorrmatrix(M,imf,patient,ROIsofinterest)
 %docorrmatrix Calculates and plots the correlation matrix
-%   Inputs: M - matrix that has the imfs
+%   Inputs: M - matrix that has the imfs and is formated according to the code in main.m
 %           imf - number of imf to analyse
 %           patient - patient to analyse
 %           ROIsofinterest - ROIs to analyse
