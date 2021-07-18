@@ -2,3 +2,5 @@
 M.mat
 M_memd.mat
 *.asv
+*.1D
+.DS_Store
