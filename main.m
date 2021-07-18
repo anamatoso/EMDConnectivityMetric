@@ -8,13 +8,14 @@
 disp("Loading the patients...");
 myDir = uigetdir; %gets directory of the files
 myFiles = dir(fullfile(myDir)); %gets all files
-
+f = waitbar(0,"Loading Patients");
 dataLines = [2, Inf];
 lenfiles=length(myFiles);
 for k = 4:lenfiles
     baseFileName = myFiles(k).name;
     fullFileName = fullfile(myDir, baseFileName);
-    disp(k/lenfiles*100+"%");
+    %disp(k/lenfiles*100+"%");
+    waitbar(k/lenfiles,f);
     opts = delimitedTextImportOptions("NumVariables", 116);
     % Specify range and delimiter
     opts.DataLines = dataLines;
@@ -30,45 +31,48 @@ for k = 4:lenfiles
     Mpatients{k-3} = table2array(readtable(fullFileName, opts));% every cell has 1 patient
      
 end
+close(f)
 Mpatients=Mpatients'; % every row is 1 patient
 disp("Patients loaded.");
 clear opts myDir myFiles lenfiles dataLines baseFileName fullFileName k
-%%
+%% Do with EMD
 M_memd=Mpatients;
 n_patients=length(M_memd);
-disp("Starting calculating and saving the IMFs...");
+f = waitbar(0,"Starting calculating and saving the IMFs...");
 for i=1:n_patients
     patient=M_memd{i,1};
     for j=1:116
         M_memd{i,j+1}=emd(patient(:,j)); % IMFs of each the nth region is on the n+1 column of the respective patient
     end
-    disp(i/n_patients*100+"% done");
+    waitbar(i/n_patients,f);
 end
-
-%%
+close(f)
+%% Do with MEMD
 M_memd=Mpatients;
 [n_patients, ~]=size(M_memd);
 [~,n_signals]=size(M_memd{1});
+f = waitbar(0,"Starting calculating and saving the IMFs...");
 for p=1:n_patients
-    m=memdalt(M_memd{p});
+    m=memdalt(M_memd{p},2);
     for i=1:n_signals
         M_memd{p,i+1}= (squeeze(m(i,:,:)))';
     end
-    disp(p/n_patients*100+"% done");
+    waitbar(p/n_patients,f);
 end
+close(f)
 clear m i p
 %% Plot correlation matrix with EMD
-%load("M.mat");
+load("M.mat");
 patient=1;
 imf=1;
 rois=(1:116);
-[mat_cor] = docorrmatrix(M,imf,patient,rois);
+[mat_cor1] = docorrmatrix(M,imf,patient,rois);
 %% Plot correlation matrix with EMD
-%load("M_memd.mat");
+load("M_memd.mat");
 patient=1;
 imf=1;
 rois=(1:116);
-[mat_cor] = docorrmatrix(M_memd,imf,patient,rois);
+[mat_cor2] = docorrmatrix(M_memd,imf,patient,rois);
 %%
 minimf=inf;%=4
 for p=1:n_patients

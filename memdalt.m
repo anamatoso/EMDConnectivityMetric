@@ -82,10 +82,10 @@ function q = memdalt(x, varargin)
 % imf = memd(s6,256,'stop',[0.05 0.5 0.05])
 
 global N N_dim;
-[x, seq, t, ndir, N_dim, N, sd, sd2, tol, nbit, MAXITERATIONS, stop_crit, stp_cnt] = set_value(x, nargin, varargin{:});
+[x, seq, t, ndir, N_dim, N, sd, sd2, tol, nbit, MAXITERATIONS, stop_crit, stp_cnt, min_imfs] = set_value(x, nargin, varargin{:});
 
 r=x; n_imf=1;q = zeros(N_dim,1,N);
-while ~stop_emd(r, seq, ndir)
+while ~stop_emd(r, seq, ndir,n_imf,min_imfs)
     % current mode
     m = r;
      
@@ -139,7 +139,7 @@ q(:,n_imf,:)=r';
 end
 
 %---------------------------------------------------------------------------------------------------
-function stp = stop_emd(r, seq, ndir)
+function stp = stop_emd(r, seq, ndir,n_imf,min_imfs)
 global N_dim;
 ner = zeros(ndir,1);
 for it=1:ndir
@@ -177,7 +177,9 @@ for it=1:ndir
 end
 
 % Stops if the all projected signals have less than 3 extrema
+morethanmin = n_imf>=min_imfs;
 stp = all(ner < 3);
+stp = stp && morethanmin;
 end
 
 %---------------------------------------------------------------------------------------------------
@@ -463,7 +465,7 @@ else
 end
 end
 
-function [q, seq, t, ndir, N_dim, N, sd, sd2, tol, nbit, MAXITERATIONS, stp_crit, stp_cnt] = set_value(q, narg, varargin)
+function [q, seq, t, ndir, N_dim, N, sd, sd2, tol, nbit, MAXITERATIONS, stp_crit, stp_cnt, min_imfs] = set_value(q, narg, varargin)
 
 error(nargoutchk(1,4,narg));
 ndir = [];
@@ -500,39 +502,43 @@ q = double(q);
 Max_channels = 300;
 
 if(narg==2)
-    ndir=varargin{1};
+    min_imfs=varargin{1};
 end
 
 if(narg==3)
-    if(~isempty(varargin{1}))
-        ndir=varargin{1};
-    else
-        ndir=64;
-    end
-    stp_crit=varargin{2};
+    ndir=varargin{2};
 end
 
-if(narg==4 && strcmp(varargin{2},'fix_h'))
-    if(isempty(varargin{1}))
-        ndir=64;
-        stp_crit=varargin{2};
-        stp_cnt  = varargin{3};
+if(narg==4)
+    if(~isempty(varargin{2}))
+        ndir=varargin{2};
     else
-        ndir=varargin{1};
-        stp_crit=varargin{2};
-        stp_cnt  = varargin{3};
-    end
-elseif (narg==4 && strcmp(varargin{2},'stop'))
-    if(isempty(varargin{1}))
         ndir=64;
-        stp_crit=varargin{2};
-        stp_vec=varargin{3};
-    else
-        ndir=varargin{1};
-        stp_crit=varargin{2};
-        stp_vec=varargin{3};
     end
-elseif (narg==4 && ~xor(strcmp(varargin{2},'fix_h'),strcmp(varargin{2},'stop')))
+    stp_crit=varargin{3};
+end
+
+if(narg==5 && strcmp(varargin{3},'fix_h'))
+    if(isempty(varargin{2}))
+        ndir=64;
+        stp_crit=varargin{3};
+        stp_cnt  = varargin{4};
+    else
+        ndir=varargin{2};
+        stp_crit=varargin{3};
+        stp_cnt  = varargin{4};
+    end
+elseif (narg==5 && strcmp(varargin{3},'stop'))
+    if(isempty(varargin{2}))
+        ndir=64;
+        stp_crit=varargin{3};
+        stp_vec=varargin{4};
+    else
+        ndir=varargin{2};
+        stp_crit=varargin{3};
+        stp_vec=varargin{4};
+    end
+elseif (narg==5 && ~xor(strcmp(varargin{3},'fix_h'),strcmp(varargin{3},'stop')))
     Nmsgid = generatemsgid('invalid stop_criteria');
     error(Nmsgid,'stop_criteria should be either fix_h or stop');
 end
