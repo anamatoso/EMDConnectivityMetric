@@ -178,8 +178,8 @@ end
 
 % Stops if the all projected signals have less than 3 extrema
 morethanmin = n_imf>=min_imfs;
-stp = all(ner < 3);
-stp = stp && morethanmin;
+stp1 = all(ner < 3);
+stp = (stp1 && morethanmin);
 end
 
 %---------------------------------------------------------------------------------------------------

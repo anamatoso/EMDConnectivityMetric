@@ -47,6 +47,7 @@ for i=1:n_patients
     waitbar(i/n_patients,f);
 end
 close(f)
+clear i patient f
 %% Do with MEMD
 M_memd=Mpatients;
 [n_patients, ~]=size(M_memd);
@@ -60,25 +61,27 @@ for p=1:n_patients
     waitbar(p/n_patients,f);
 end
 close(f)
-clear m i p
+clear m i p f
 %% Plot correlation matrix with EMD
-load("M.mat");
+%load("M.mat");
 patient=1;
 imf=1;
 rois=(1:116);
 [mat_cor1] = docorrmatrix(M,imf,patient,rois);
 %% Plot correlation matrix with MEMD
-load("M_memd.mat");
+%load("M_memd.mat");
 patient=1;
 imf=1;
 rois=(1:116);
 [mat_cor2] = docorrmatrix(M_memd,imf,patient,rois);
-%%
+%% Check what is the minimum number of imfs of the whole signals
+% it should yield the number 5
 minimf=inf;%=4
 for p=1:n_patients
         [~,mi]=size(M_memd{p,2});
         if mi<minimf
             minimf=mi;
+            disp(p)
         end
 end
 clear p mi
