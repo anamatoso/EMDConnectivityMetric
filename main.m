@@ -53,7 +53,7 @@ M_memd=Mpatients;
 [~,n_signals]=size(M_memd{1});
 f = waitbar(0,"Starting calculating and saving the IMFs...");
 for p=1:n_patients
-    m=memdalt(M_memd{p},2);
+    m=memdalt(M_memd{p},5);
     for i=1:n_signals
         M_memd{p,i+1}= (squeeze(m(i,:,:)))';
     end
@@ -67,7 +67,7 @@ patient=1;
 imf=1;
 rois=(1:116);
 [mat_cor1] = docorrmatrix(M,imf,patient,rois);
-%% Plot correlation matrix with EMD
+%% Plot correlation matrix with MEMD
 load("M_memd.mat");
 patient=1;
 imf=1;
