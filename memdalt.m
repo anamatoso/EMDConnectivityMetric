@@ -99,7 +99,7 @@ while ~stop_emd(r, seq, ndir,n_imf,min_imfs)
     
     % In case the current mode is so small that machine precision can cause
     % spurious extrema to appear
-    if (max(abs(m))) < (1e-10)*(max(abs(x)))
+    if (max(abs(m))) < (1e-1000)*(max(abs(x))) % MIGHT NEED TO CHANGE THRESHOLD
         if ~stop_sift
             warning('emd:warning','forced stop of EMD : too small amplitude')
         else
