@@ -80,7 +80,7 @@ function q = memdalt(x, varargin)
 
 % load syn_hex_inp.mat
 % imf = memd(s6,256,'stop',[0.05 0.5 0.05])
-
+threshold=1e-1000;
 global N N_dim;
 [x, seq, t, ndir, N_dim, N, sd, sd2, tol, nbit, MAXITERATIONS, stop_crit, stp_cnt, min_imfs] = set_value(x, nargin, varargin{:});
 
@@ -99,7 +99,7 @@ while ~stop_emd(r, seq, ndir,n_imf,min_imfs)
     
     % In case the current mode is so small that machine precision can cause
     % spurious extrema to appear
-    if (max(abs(m))) < (1e-1000)*(max(abs(x))) % MIGHT NEED TO CHANGE THRESHOLD
+    if (max(abs(m))) < (threshold)*(max(abs(x))) % MIGHT NEED TO CHANGE THRESHOLD
         if ~stop_sift
             warning('emd:warning','forced stop of EMD : too small amplitude')
         else
@@ -627,7 +627,7 @@ t=1:N;
 
 % Counter
 nbit=0;
-MAXITERATIONS=1000; % default
+MAXITERATIONS=2000; % changed from 1000 to 2000 
 
 % tic
 end
