@@ -1,4 +1,10 @@
 function [Mpatients] = loadpatients(myDir)
+% This function loads the patient data into a column cell of patients.
+%
+% Input:    myDir - Directory in which it is the data of the patients (.1D
+% files)
+%
+% Output:   Mpatients - Column cell in which each row is a patient.
 
 disp("Loading the patients...");
 myFiles = dir(fullfile(myDir)); % gets all files
